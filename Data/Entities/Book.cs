@@ -23,6 +23,8 @@ namespace BackendDemo.Data.Entities
 
         public DateTime ReturnedAt { get; set; }
 
+        public string RequiredRole { get; set; }
+
         // Navigation properties
         public ICollection<Genre> Genres { get; set; }
     }

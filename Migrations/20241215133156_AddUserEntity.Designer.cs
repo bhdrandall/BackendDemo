@@ -4,6 +4,7 @@ using BackendDemo.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BackendDemo.Migrations
 {
     [DbContext(typeof(LibraryDbContext))]
-    partial class LibraryDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241215133156_AddUserEntity")]
+    partial class AddUserEntity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -52,10 +55,6 @@ namespace BackendDemo.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("RequiredRole")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<DateTime>("ReturnedAt")
                         .HasColumnType("datetime2");
 
@@ -73,7 +72,6 @@ namespace BackendDemo.Migrations
                             DueDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Name = "The Great Gatsby",
                             Owner = "Library",
-                            RequiredRole = "Basic",
                             ReturnedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
@@ -85,7 +83,6 @@ namespace BackendDemo.Migrations
                             DueDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Name = "1984",
                             Owner = "Library",
-                            RequiredRole = "Basic",
                             ReturnedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
@@ -97,7 +94,6 @@ namespace BackendDemo.Migrations
                             DueDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Name = "Pride and Prejudice",
                             Owner = "Library",
-                            RequiredRole = "Basic",
                             ReturnedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
@@ -109,7 +105,6 @@ namespace BackendDemo.Migrations
                             DueDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Name = "The Hobbit",
                             Owner = "Library",
-                            RequiredRole = "Basic",
                             ReturnedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
@@ -121,7 +116,6 @@ namespace BackendDemo.Migrations
                             DueDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Name = "To Kill a Mockingbird",
                             Owner = "Library",
-                            RequiredRole = "Basic",
                             ReturnedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
@@ -133,7 +127,6 @@ namespace BackendDemo.Migrations
                             DueDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Name = "Dune",
                             Owner = "Library",
-                            RequiredRole = "Basic",
                             ReturnedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
@@ -145,7 +138,6 @@ namespace BackendDemo.Migrations
                             DueDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Name = "The Da Vinci Code",
                             Owner = "Library",
-                            RequiredRole = "Basic",
                             ReturnedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
@@ -157,7 +149,6 @@ namespace BackendDemo.Migrations
                             DueDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Name = "The Catcher in the Rye",
                             Owner = "Library",
-                            RequiredRole = "Basic",
                             ReturnedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
@@ -169,7 +160,6 @@ namespace BackendDemo.Migrations
                             DueDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Name = "The Alchemist",
                             Owner = "Library",
-                            RequiredRole = "Basic",
                             ReturnedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
@@ -181,7 +171,6 @@ namespace BackendDemo.Migrations
                             DueDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Name = "Sapiens",
                             Owner = "Library",
-                            RequiredRole = "Basic",
                             ReturnedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         });
                 });
@@ -245,47 +234,6 @@ namespace BackendDemo.Migrations
                         });
                 });
 
-            modelBuilder.Entity("BackendDemo.Data.Entities.Role", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Roles");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Description = "Basic user access",
-                            Name = "Basic"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Description = "Premium user access",
-                            Name = "Premium"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Description = "Administrator access",
-                            Name = "Admin"
-                        });
-                });
-
             modelBuilder.Entity("BackendDemo.Data.Entities.User", b =>
                 {
                     b.Property<int>("Id")
@@ -302,28 +250,13 @@ namespace BackendDemo.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("RoleId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Username")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("RoleId");
-
                     b.ToTable("Users");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Email = "admin@library.com",
-                            PasswordHash = "$2a$11$ccOGusodYvrjFRDebuTxjuXS8/aazLnY9DzjUaCwWCq9pzlRAuaf.",
-                            RoleId = 3,
-                            Username = "admin"
-                        });
                 });
 
             modelBuilder.Entity("BookGenre", b =>
@@ -373,43 +306,48 @@ namespace BackendDemo.Migrations
                         },
                         new
                         {
-                            BooksId = 3,
-                            GenresId = 8
-                        },
-                        new
-                        {
                             BooksId = 4,
                             GenresId = 1
                         },
                         new
                         {
-                            BooksId = 5,
-                            GenresId = 1
-                        },
-                        new
-                        {
-                            BooksId = 5,
+                            BooksId = 4,
                             GenresId = 5
                         },
                         new
                         {
-                            BooksId = 6,
+                            BooksId = 5,
                             GenresId = 1
                         },
                         new
                         {
-                            BooksId = 6,
+                            BooksId = 5,
                             GenresId = 8
                         },
                         new
                         {
+                            BooksId = 6,
+                            GenresId = 1
+                        },
+                        new
+                        {
+                            BooksId = 6,
+                            GenresId = 2
+                        },
+                        new
+                        {
                             BooksId = 7,
                             GenresId = 1
                         },
                         new
                         {
                             BooksId = 7,
-                            GenresId = 5
+                            GenresId = 7
+                        },
+                        new
+                        {
+                            BooksId = 7,
+                            GenresId = 3
                         },
                         new
                         {
@@ -433,17 +371,6 @@ namespace BackendDemo.Migrations
                         });
                 });
 
-            modelBuilder.Entity("BackendDemo.Data.Entities.User", b =>
-                {
-                    b.HasOne("BackendDemo.Data.Entities.Role", "Role")
-                        .WithMany("Users")
-                        .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Role");
-                });
-
             modelBuilder.Entity("BookGenre", b =>
                 {
                     b.HasOne("BackendDemo.Data.Entities.Book", null)
@@ -457,11 +384,6 @@ namespace BackendDemo.Migrations
                         .HasForeignKey("GenresId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("BackendDemo.Data.Entities.Role", b =>
-                {
-                    b.Navigation("Users");
                 });
 #pragma warning restore 612, 618
         }

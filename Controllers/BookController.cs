@@ -3,13 +3,17 @@ using BackendDemo.Data.Entities;
 using BackendDemo.Models;
 using BackendDemo.Services;
 using BackendDemo.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
+using BackendDemo.Data.Enums;
 
 namespace BackendDemo.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class BookController : ControllerBase
     {
         private readonly IBookService _bookService;
@@ -25,7 +29,21 @@ namespace BackendDemo.Controllers
         {
             try
             {
-                var books = await _bookService.GetBooksAsync();
+                // Add debugging information
+                var isAuthenticated = User.Identity.IsAuthenticated;
+                var userRole = User.FindFirst(ClaimTypes.Role)?.Value;
+                var userName = User.FindFirst(ClaimTypes.Name)?.Value;
+
+                Console.WriteLine($"IsAuthenticated: {isAuthenticated}");
+                Console.WriteLine($"User Role: {userRole}");
+                Console.WriteLine($"User Name: {userName}");
+
+                if (!isAuthenticated)
+                {
+                    return Unauthorized("User is not authenticated");
+                }
+
+                var books = await _bookService.GetBooksAsync(userRole);
                 return Ok(books);
             }
             catch (Exception ex)
@@ -40,14 +58,17 @@ namespace BackendDemo.Controllers
         {
             try
             {
-                var book = await _bookService.GetBookByIdAsync(id);
+                var userRole = User.FindFirst(ClaimTypes.Role)?.Value;
+                var book = await _bookService.GetBookAsync(id, userRole);
                 
                 if (book == null)
-                {
-                    return NotFound($"Book with ID {id} not found");
-                }
+                    return NotFound();
 
                 return Ok(book);
+            }
+            catch (UnauthorizedAccessException)
+            {
+                return Forbid();
             }
             catch (Exception ex)
             {
@@ -72,6 +93,7 @@ namespace BackendDemo.Controllers
 
         // POST: api/book
         [HttpPost]
+        [Authorize(Roles = UserRoles.Admin)]
         public async Task<IActionResult>
         AddBook([FromBody] BookCreateRequest request)
         {
