@@ -1,28 +1,31 @@
-using Microsoft.AspNetCore.Mvc;
 using BackendDemo.Data;
+using BackendDemo.Data.Entities;
+using BackendDemo.Models;
+using BackendDemo.Services;
+using BackendDemo.Services.Interfaces;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace BackendDemo.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class LibraryController : ControllerBase
+    public class BookController : ControllerBase
     {
-        private readonly LibraryDbContext _context;
+        private readonly IBookService _bookService;
 
-        // Inject the DbContext through constructor
-        public LibraryController(LibraryDbContext context)
+        public BookController(IBookService bookService)
         {
-            _context = context;
+            _bookService = bookService;
         }
 
-        // GET: api/library
+        // GET: api/book
         [HttpGet]
         public async Task<IActionResult> GetBooks()
         {
             try
             {
-                var books = await _context.Books.ToListAsync();
+                var books = await _bookService.GetBooksAsync();
                 return Ok(books);
             }
             catch (Exception ex)
@@ -31,9 +34,10 @@ namespace BackendDemo.Controllers
             }
         }
 
-        // POST: api/library
+        // POST: api/book
         [HttpPost]
-        public async Task<IActionResult> AddBook([FromBody] BookCreateRequest request)
+        public async Task<IActionResult>
+        AddBook([FromBody] BookCreateRequest request)
         {
             try
             {
@@ -42,25 +46,21 @@ namespace BackendDemo.Controllers
                     return BadRequest("Book name is required");
                 }
 
-                var book = new Book
+                if (string.IsNullOrEmpty(request.Author))
                 {
-                    Name = request.Name
-                };
+                    return BadRequest("Author is required");
+                }
 
-                await _context.Books.AddAsync(book);
-                await _context.SaveChangesAsync();
+                var book = await _bookService.AddBookAsync(request);
 
-                return CreatedAtAction(nameof(GetBooks), new { id = book.Id }, book);
+                return CreatedAtAction(nameof(GetBooks),
+                new { id = book.Id },
+                book);
             }
             catch (Exception ex)
             {
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
-    }
-
-    public class BookCreateRequest
-    {
-        public string Name { get; set; }
     }
 }

@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using BackendDemo.Data;
+using BackendDemo.Services.Interfaces;
+using BackendDemo.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,6 +15,10 @@ builder.Services.AddDbContext<LibraryDbContext>(options =>
 // Add Swagger (already included in the default webapi template)
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+// Add services
+builder.Services.AddScoped<IBookService, BookService>();
+builder.Services.AddScoped<IGenreService, GenreService>();
 
 var app = builder.Build();
 
