@@ -12,17 +12,7 @@ builder.Services.AddDbContext<LibraryDbContext>(options =>
 
 // Add Swagger (already included in the default webapi template)
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(c =>
-{
-    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Library API", Version = "v1" });
-    
-    // Add server URL
-    c.AddServer(new OpenApiServer
-    {
-        Url = "https://backend-demo-library-bff2hxbfbscphnda.ukwest-01.azurewebsites.net,
-        Description = "Production Server"
-    });
-});
+builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
