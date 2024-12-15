@@ -18,6 +18,8 @@ namespace BackendDemo.Models
 
         public DateTime ReturnedAt { get; set; }
 
+        public string RequiredRole { get; set; }
+
         public ICollection<GenreDto> Genres { get; set; }
     }
 }

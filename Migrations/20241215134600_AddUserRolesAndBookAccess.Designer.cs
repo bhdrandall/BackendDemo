@@ -4,6 +4,7 @@ using BackendDemo.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BackendDemo.Migrations
 {
     [DbContext(typeof(LibraryDbContext))]
-    partial class LibraryDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241215134600_AddUserRolesAndBookAccess")]
+    partial class AddUserRolesAndBookAccess
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -97,7 +100,7 @@ namespace BackendDemo.Migrations
                             DueDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Name = "Pride and Prejudice",
                             Owner = "Library",
-                            RequiredRole = "Premium",
+                            RequiredRole = "Basic",
                             ReturnedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
@@ -109,7 +112,7 @@ namespace BackendDemo.Migrations
                             DueDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Name = "The Hobbit",
                             Owner = "Library",
-                            RequiredRole = "Admin",
+                            RequiredRole = "Basic",
                             ReturnedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
@@ -157,7 +160,7 @@ namespace BackendDemo.Migrations
                             DueDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Name = "The Catcher in the Rye",
                             Owner = "Library",
-                            RequiredRole = "Premium",
+                            RequiredRole = "Basic",
                             ReturnedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
@@ -181,7 +184,7 @@ namespace BackendDemo.Migrations
                             DueDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Name = "Sapiens",
                             Owner = "Library",
-                            RequiredRole = "Premium",
+                            RequiredRole = "Basic",
                             ReturnedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         });
                 });
@@ -245,47 +248,6 @@ namespace BackendDemo.Migrations
                         });
                 });
 
-            modelBuilder.Entity("BackendDemo.Data.Entities.Role", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Roles");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Description = "Basic user access",
-                            Name = "Basic"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Description = "Premium user access",
-                            Name = "Premium"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Description = "Administrator access",
-                            Name = "Admin"
-                        });
-                });
-
             modelBuilder.Entity("BackendDemo.Data.Entities.User", b =>
                 {
                     b.Property<int>("Id")
@@ -302,16 +264,15 @@ namespace BackendDemo.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("RoleId")
-                        .HasColumnType("int");
+                    b.Property<string>("Role")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Username")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("RoleId");
 
                     b.ToTable("Users");
 
@@ -320,8 +281,8 @@ namespace BackendDemo.Migrations
                         {
                             Id = 1,
                             Email = "admin@library.com",
-                            PasswordHash = "$2a$11$YzrFLpyJOYhT0sUO8/9JP.2Gj882SilRl3nUpRxT/Va3rzy881ndS",
-                            RoleId = 3,
+                            PasswordHash = "$2a$11$zp7n3fLfU3YgiBsAYvC8MOI7nvfV0exF1nR3m6lD7O3vfA1QmE1aq",
+                            Role = "Admin",
                             Username = "admin"
                         });
                 });
@@ -433,17 +394,6 @@ namespace BackendDemo.Migrations
                         });
                 });
 
-            modelBuilder.Entity("BackendDemo.Data.Entities.User", b =>
-                {
-                    b.HasOne("BackendDemo.Data.Entities.Role", "Role")
-                        .WithMany("Users")
-                        .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Role");
-                });
-
             modelBuilder.Entity("BookGenre", b =>
                 {
                     b.HasOne("BackendDemo.Data.Entities.Book", null)
@@ -457,11 +407,6 @@ namespace BackendDemo.Migrations
                         .HasForeignKey("GenresId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("BackendDemo.Data.Entities.Role", b =>
-                {
-                    b.Navigation("Users");
                 });
 #pragma warning restore 612, 618
         }

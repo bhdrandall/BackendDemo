@@ -3,6 +3,7 @@ using BackendDemo.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 using BackendDemo.Services.Interfaces;
 using BackendDemo.Models;
+using BackendDemo.Data.Enums;
 
 namespace BackendDemo.Services
 {
@@ -15,28 +16,61 @@ namespace BackendDemo.Services
             _context = context;
         }
 
-        public async Task<IEnumerable<BookDto>> GetBooksAsync()
+        public async Task<IEnumerable<BookDto>> GetBooksAsync(string userRole)
         {
             var books = await _context.Books
                 .Include(b => b.Genres)
                 .ToListAsync();
 
-            return books.Select(b => new BookDto
+            var accessibleBooks = books
+                .Where(b => CanAccessBook(b.RequiredRole, userRole))
+                .Select(b => MapToDto(b));
+
+            return accessibleBooks;
+        }
+
+        public async Task<BookDto> GetBookAsync(int id, string userRole)
+        {
+            var book = await _context.Books
+                .Include(b => b.Genres)
+                .FirstOrDefaultAsync(b => b.Id == id);
+
+            if (book == null)
+                return null;
+
+            if (!CanAccessBook(book.RequiredRole, userRole))
+                throw new UnauthorizedAccessException();
+
+            return MapToDto(book);
+        }
+
+        private static bool CanAccessBook(string requiredRole, string userRole)
+        {
+            if (userRole == UserRoles.Admin) return true;
+            if (userRole == UserRoles.Premium) return requiredRole != UserRoles.Admin;
+            if (userRole == UserRoles.Basic) return requiredRole == UserRoles.Basic;
+            return false;
+        }
+
+        private static BookDto MapToDto(Book book)
+        {
+            return new BookDto
             {
-                Id = b.Id,
-                Name = b.Name,
-                Author = b.Author,
-                Description = b.Description,
-                Owner = b.Owner,
-                CheckedOutAt = b.CheckedOutAt,
-                DueDate = b.DueDate,
-                ReturnedAt = b.ReturnedAt,
-                Genres = b.Genres.Select(g => new GenreDto
+                Id = book.Id,
+                Name = book.Name,
+                Author = book.Author,
+                Description = book.Description,
+                Owner = book.Owner,
+                CheckedOutAt = book.CheckedOutAt,
+                DueDate = book.DueDate,
+                ReturnedAt = book.ReturnedAt,
+                RequiredRole = book.RequiredRole,
+                Genres = book.Genres.Select(g => new GenreDto
                 {
                     Id = g.Id,
                     Name = g.Name
                 }).ToList()
-            });
+            };
         }
 
         public async Task<IEnumerable<BookDto>> GetBooksByGenreAsync(int genreId)
@@ -62,33 +96,6 @@ namespace BackendDemo.Services
                     Name = g.Name
                 }).ToList()
             });
-        }
-
-        public async Task<BookDto> GetBookByIdAsync(int id)
-        {
-            var book = await _context.Books
-                .Include(b => b.Genres)
-                .FirstOrDefaultAsync(b => b.Id == id);
-
-            if (book == null)
-                return null;
-
-            return new BookDto
-            {
-                Id = book.Id,
-                Name = book.Name,
-                Author = book.Author,
-                Description = book.Description,
-                Owner = book.Owner,
-                CheckedOutAt = book.CheckedOutAt,
-                DueDate = book.DueDate,
-                ReturnedAt = book.ReturnedAt,
-                Genres = book.Genres.Select(g => new GenreDto
-                {
-                    Id = g.Id,
-                    Name = g.Name
-                }).ToList()
-            };
         }
 
         public async Task<BookDto> AddBookAsync(BookCreateRequest request)
