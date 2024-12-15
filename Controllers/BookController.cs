@@ -34,6 +34,42 @@ namespace BackendDemo.Controllers
             }
         }
 
+        // GET: api/book/{id}
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetBook(int id)
+        {
+            try
+            {
+                var book = await _bookService.GetBookByIdAsync(id);
+                
+                if (book == null)
+                {
+                    return NotFound($"Book with ID {id} not found");
+                }
+
+                return Ok(book);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        // GET: api/book/genre/{genreId}
+        [HttpGet("genre/{genreId}")]
+        public async Task<IActionResult> GetBooksByGenre(int genreId)
+        {
+            try
+            {
+                var books = await _bookService.GetBooksByGenreAsync(genreId);
+                return Ok(books);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
         // POST: api/book
         [HttpPost]
         public async Task<IActionResult>
