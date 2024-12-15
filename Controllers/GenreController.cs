@@ -4,11 +4,13 @@ using BackendDemo.Models;
 using BackendDemo.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BackendDemo.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class GenreController : ControllerBase
     {
         private readonly IGenreService _genreService;

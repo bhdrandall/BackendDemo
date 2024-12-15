@@ -72,7 +72,7 @@ public class EntitySeedData
                 CheckedOutAt = DateTime.MinValue,
                 DueDate = DateTime.MinValue,
                 ReturnedAt = DateTime.MinValue,
-                RequiredRole = "Basic"
+                RequiredRole = "Premium"
             },
             new Book
             {
@@ -84,7 +84,7 @@ public class EntitySeedData
                 CheckedOutAt = DateTime.MinValue,
                 DueDate = DateTime.MinValue,
                 ReturnedAt = DateTime.MinValue,
-                RequiredRole = "Basic"
+                RequiredRole = "Admin"
             },
             new Book
             {
@@ -132,7 +132,7 @@ public class EntitySeedData
                 CheckedOutAt = DateTime.MinValue,
                 DueDate = DateTime.MinValue,
                 ReturnedAt = DateTime.MinValue,
-                RequiredRole = "Basic"
+                RequiredRole = "Premium"
             },
             new Book
             {
@@ -156,7 +156,7 @@ public class EntitySeedData
                 CheckedOutAt = DateTime.MinValue,
                 DueDate = DateTime.MinValue,
                 ReturnedAt = DateTime.MinValue,
-                RequiredRole = "Basic"
+                RequiredRole = "Premium"
             }
         );
 
