@@ -5,7 +5,7 @@ namespace BackendDemo.Services.Interfaces
 {
     public interface IBookService
     {
-        Task<IEnumerable<Book>> GetBooksAsync();
-        Task<Book> AddBookAsync(BookCreateRequest request);
+        Task<IEnumerable<BookDto>> GetBooksAsync();
+        Task<BookDto> AddBookAsync(BookCreateRequest request);
     }
 }

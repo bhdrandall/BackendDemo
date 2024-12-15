@@ -15,14 +15,31 @@ namespace BackendDemo.Services
             _context = context;
         }
 
-        public async Task<IEnumerable<Book>> GetBooksAsync()
+        public async Task<IEnumerable<BookDto>> GetBooksAsync()
         {
-            return await _context.Books
+            var books = await _context.Books
                 .Include(b => b.Genres)
                 .ToListAsync();
+
+            return books.Select(b => new BookDto
+            {
+                Id = b.Id,
+                Name = b.Name,
+                Author = b.Author,
+                Description = b.Description,
+                Owner = b.Owner,
+                CheckedOutAt = b.CheckedOutAt,
+                DueDate = b.DueDate,
+                ReturnedAt = b.ReturnedAt,
+                Genres = b.Genres.Select(g => new GenreDto
+                {
+                    Id = g.Id,
+                    Name = g.Name
+                }).ToList()
+            });
         }
 
-        public async Task<Book> AddBookAsync(BookCreateRequest request)
+        public async Task<BookDto> AddBookAsync(BookCreateRequest request)
         {
             var book = new Book
             {
@@ -49,7 +66,22 @@ namespace BackendDemo.Services
             await _context.Books.AddAsync(book);
             await _context.SaveChangesAsync();
 
-            return book;
+            return new BookDto
+            {
+                Id = book.Id,
+                Name = book.Name,
+                Author = book.Author,
+                Description = book.Description,
+                Owner = book.Owner,
+                CheckedOutAt = book.CheckedOutAt,
+                DueDate = book.DueDate,
+                ReturnedAt = book.ReturnedAt,
+                Genres = book.Genres.Select(g => new GenreDto
+                {
+                    Id = g.Id,
+                    Name = g.Name
+                }).ToList()
+            };
         }
     }
 }

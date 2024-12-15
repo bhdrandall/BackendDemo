@@ -15,14 +15,20 @@ namespace BackendDemo.Services
             _context = context;
         }
 
-        public async Task<IEnumerable<Genre>> GetGenresAsync()
+        public async Task<IEnumerable<GenreDto>> GetGenresAsync()
         {
-            return await _context.Genres
+            var genres = await _context.Genres
                 .Include(g => g.Books)
                 .ToListAsync();
+
+            return genres.Select(g => new GenreDto
+            {
+                Id = g.Id,
+                Name = g.Name
+            });
         }
 
-        public async Task<Genre> AddGenreAsync(GenreCreateRequest request)
+        public async Task<GenreDto> AddGenreAsync(GenreCreateRequest request)
         {
             var genre = new Genre
             {
@@ -32,7 +38,11 @@ namespace BackendDemo.Services
             await _context.Genres.AddAsync(genre);
             await _context.SaveChangesAsync();
 
-            return genre;
+            return new GenreDto
+            {
+                Id = genre.Id,
+                Name = genre.Name
+            };
         }
     }
 }
