@@ -46,14 +46,6 @@ BackendDemo is a library management system built with ASP.NET Core and Entity Fr
    dotnet run
    ```
 
-### API Endpoints
-
-- **GET** `/api/library`: Retrieve all books.
-- **POST** `/api/library`: Add a new book.
-- **PUT** `/api/library/{id}`: Update an existing book.
-- **DELETE** `/api/library/{id}`: Delete a book.
-
-
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
