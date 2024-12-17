@@ -28,5 +28,16 @@ namespace BackendDemo.Services
                 })
                 .ToListAsync();
         }
+
+        public async Task DeleteUserAsync(string userId)
+        {
+            var user = await _context.Users.FindAsync(userId);
+            if (user == null)
+            {
+                throw new Exception($"User with ID {userId} not found");
+            }
+            _context.Users.Remove(user);
+            await _context.SaveChangesAsync();
+        }
     }
 } 

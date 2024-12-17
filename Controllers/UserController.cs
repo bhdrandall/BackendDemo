@@ -24,5 +24,22 @@ namespace BackendDemo.Controllers
             var users = await _userService.GetAllUsersAsync();
             return Ok(users);
         }
+
+        // DELETE: api/user/{id}
+        [HttpDelete("{id}")]
+        [Authorize(Roles = UserRoles.Admin)]
+        public async Task<IActionResult> DeleteUser(int id)
+        {
+            try
+            {
+                await _userService.DeleteUserAsync(id);
+
+                return NoContent(); // 204 No Content
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
     }
 } 
