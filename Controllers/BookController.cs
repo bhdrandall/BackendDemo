@@ -114,8 +114,8 @@ namespace BackendDemo.Controllers
         }
 
         // Update a book
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateBook(int id, [FromBody] BookDto updatedBook)
+        [HttpPut]
+        public async Task<IActionResult> UpdateBook([FromBody] BookDto updatedBook)
         {
             try
             {

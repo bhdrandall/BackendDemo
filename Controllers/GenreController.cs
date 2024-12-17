@@ -58,9 +58,9 @@ namespace BackendDemo.Controllers
             }
         }
 
-        // PUT: api/genre/{id}
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateGenre(int id, [FromBody] GenreDto updatedGenre)
+        // PUT: api/genre/
+        [HttpPut]
+        public async Task<IActionResult> UpdateGenre([FromBody] GenreDto updatedGenre)
         {
             try
             {
