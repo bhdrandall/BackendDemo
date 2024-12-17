@@ -28,6 +28,15 @@ namespace BackendDemo.Services
             });
         }
 
+        public async Task<GenreDto> GetGenreAsync(int id)
+        {
+            var genre = await _context.Genres.FindAsync(id);
+            if (genre == null)
+                throw new Exception("Genre not found");
+
+            return new GenreDto { Id = genre.Id, Name = genre.Name };
+        }
+
         public async Task<GenreDto> AddGenreAsync(GenreCreateRequest request)
         {
             var genre = new Genre
@@ -43,6 +52,26 @@ namespace BackendDemo.Services
                 Id = genre.Id,
                 Name = genre.Name
             };
+        }
+
+        public async Task UpdateGenreAsync(GenreDto genreDto)
+        {
+            var genre = await _context.Genres.FindAsync(genreDto.Id);
+            if (genre == null)
+                throw new Exception("Genre not found");
+
+            genre.Name = genreDto.Name;
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task DeleteGenreAsync(int id)
+        {
+            var genre = await _context.Genres.FindAsync(id);
+            if (genre == null)
+                throw new Exception("Genre not found");
+
+            _context.Genres.Remove(genre);
+            await _context.SaveChangesAsync();
         }
     }
 }

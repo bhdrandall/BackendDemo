@@ -108,7 +108,8 @@ namespace BackendDemo.Services
                 Owner = request.Owner,
                 CheckedOutAt = DateTime.MinValue,
                 DueDate = DateTime.MinValue,
-                ReturnedAt = DateTime.MinValue
+                ReturnedAt = DateTime.MinValue,
+                RequiredRole = request.RequiredRole
             };
 
             if (request.GenreIds != null && request.GenreIds.Any())
@@ -141,6 +142,48 @@ namespace BackendDemo.Services
                     Name = g.Name
                 }).ToList()
             };
+        }
+
+        public async Task UpdateBookAsync(BookDto bookDto)
+        {
+            var book = await _context.Books
+                .Include(b => b.Genres)
+                .FirstOrDefaultAsync(b => b.Id == bookDto.Id);
+
+            if (book == null)
+                throw new Exception("Book not found");
+
+            book.Name = bookDto.Name;
+            book.Author = bookDto.Author;
+            book.Description = bookDto.Description;
+            book.RequiredRole = bookDto.RequiredRole;
+
+            // Remove existing genres
+            book.Genres.Clear();
+
+            // Add new genres
+            if (bookDto.Genres != null && bookDto.Genres.Any())
+            {
+                var genres = await _context.Genres
+                    .Where(g => bookDto.Genres.Select(bg => bg.Id).Contains(g.Id))
+                    .ToListAsync();
+                foreach (var genre in genres)
+                {
+                    book.Genres.Add(genre);
+                }
+            }
+
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task DeleteBookAsync(int id)
+        {
+            var book = await _context.Books.FindAsync(id);
+            if (book == null)
+                throw new Exception("Book not found");
+
+            _context.Books.Remove(book);
+            await _context.SaveChangesAsync();
         }
     }
 }

@@ -29,14 +29,11 @@ namespace BackendDemo.Controllers
         {
             try
             {
-                // Add debugging information
                 var isAuthenticated = User.Identity.IsAuthenticated;
                 var userRole = User.FindFirst(ClaimTypes.Role)?.Value;
-                var userName = User.FindFirst(ClaimTypes.Name)?.Value;
 
                 Console.WriteLine($"IsAuthenticated: {isAuthenticated}");
                 Console.WriteLine($"User Role: {userRole}");
-                Console.WriteLine($"User Name: {userName}");
 
                 if (!isAuthenticated)
                 {
@@ -104,16 +101,43 @@ namespace BackendDemo.Controllers
                     return BadRequest("Book name is required");
                 }
 
-                if (string.IsNullOrEmpty(request.Author))
-                {
-                    return BadRequest("Author is required");
-                }
-
                 var book = await _bookService.AddBookAsync(request);
 
                 return CreatedAtAction(nameof(GetBooks),
                 new { id = book.Id },
                 book);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        // Update a book
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateBook(int id, [FromBody] BookDto updatedBook)
+        {
+            try
+            {
+                await _bookService.UpdateBookAsync(updatedBook);
+
+                return NoContent(); // 204 No Content
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        // Delete a book
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteBook(int id)
+        {
+            try
+            {
+                await _bookService.DeleteBookAsync(id);
+
+                return NoContent(); // 204 No Content
             }
             catch (Exception ex)
             {

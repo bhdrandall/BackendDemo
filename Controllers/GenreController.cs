@@ -57,5 +57,37 @@ namespace BackendDemo.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
+
+        // PUT: api/genre/{id}
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateGenre(int id, [FromBody] GenreDto updatedGenre)
+        {
+            try
+            {
+                await _genreService.UpdateGenreAsync(updatedGenre);
+
+                return NoContent(); // 204 No Content
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        // DELETE: api/genre/{id}
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteGenre(int id)
+        {
+            try
+            {
+                await _genreService.DeleteGenreAsync(id);
+
+                return NoContent(); // 204 No Content
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
     }
 }

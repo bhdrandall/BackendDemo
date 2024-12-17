@@ -11,5 +11,7 @@ namespace BackendDemo.Models
         public string Owner { get; set; }
 
         public List<int> GenreIds { get; set; }
+
+        public string RequiredRole { get; set; }
     }
 }
