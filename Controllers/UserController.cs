@@ -3,6 +3,8 @@ using BackendDemo.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
+using BackendDemo.Data.Enums;
 
 namespace BackendDemo.Controllers
 {
@@ -28,7 +30,7 @@ namespace BackendDemo.Controllers
         // DELETE: api/user/{id}
         [HttpDelete("{id}")]
         [Authorize(Roles = UserRoles.Admin)]
-        public async Task<IActionResult> DeleteUser(int id)
+        public async Task<IActionResult> DeleteUser(string id)
         {
             try
             {

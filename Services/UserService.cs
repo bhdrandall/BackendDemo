@@ -31,10 +31,15 @@ namespace BackendDemo.Services
 
         public async Task DeleteUserAsync(string userId)
         {
-            var user = await _context.Users.FindAsync(userId);
+            if (!int.TryParse(userId, out int id))
+            {
+                throw new Exception($"Invalid user ID format: {userId}");
+            }
+
+            var user = await _context.Users.FindAsync(id);
             if (user == null)
             {
-                throw new Exception($"User with ID {userId} not found");
+                throw new Exception($"User with ID {id} not found");
             }
             _context.Users.Remove(user);
             await _context.SaveChangesAsync();

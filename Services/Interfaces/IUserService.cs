@@ -7,5 +7,6 @@ namespace BackendDemo.Services.Interfaces
     public interface IUserService
     {
         Task<IEnumerable<UserDto>> GetAllUsersAsync();
+        Task DeleteUserAsync(string userId);
     }
 } 
