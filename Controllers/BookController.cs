@@ -29,17 +29,7 @@ namespace BackendDemo.Controllers
         {
             try
             {
-                var isAuthenticated = User.Identity.IsAuthenticated;
                 var userRole = User.FindFirst(ClaimTypes.Role)?.Value;
-
-                Console.WriteLine($"IsAuthenticated: {isAuthenticated}");
-                Console.WriteLine($"User Role: {userRole}");
-
-                if (!isAuthenticated)
-                {
-                    return Unauthorized("User is not authenticated");
-                }
-
                 var books = await _bookService.GetBooksAsync(userRole);
                 return Ok(books);
             }
